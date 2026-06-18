@@ -23,11 +23,13 @@
 		<column>parent_id</column>
 		<column>forum_parents</column>
 		<column>forum_desc</column>
+		<column>forum_rules</column>
 		<row>
 			<value>3</value>
 			<value>Test Category</value>
 			<value>0</value>
 			<value>0</value>
+			<value></value>
 			<value></value>
 			<value></value>
 		</row>
