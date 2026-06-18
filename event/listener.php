@@ -38,7 +38,8 @@ class listener implements EventSubscriberInterface
 		\phpbb\template\template $template,
 		\phpbb\controller\helper $controller_helper,
 		$table_prefix
-	) {
+	)
+	{
 		$this->db = $db;
 		$this->user = $user;
 		$this->template = $template;
@@ -100,7 +101,7 @@ class listener implements EventSubscriberInterface
 			WHERE user_id = ' . (int) $user_id . '
 			ORDER BY display_order ASC';
 		$result = $this->db->sql_query($sql);
-		
+
 		$custom_order = [];
 		while ($row = $this->db->sql_fetchrow($result))
 		{
