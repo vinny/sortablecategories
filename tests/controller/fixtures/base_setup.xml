@@ -5,11 +5,15 @@
 		<column>username</column>
 		<column>user_type</column>
 		<column>user_email</column>
+		<column>user_permissions</column>
+		<column>user_sig</column>
 		<row>
 			<value>2</value>
 			<value>test_user</value>
 			<value>0</value>
 			<value>test@example.com</value>
+			<value></value>
+			<value></value>
 		</row>
 	</table>
 	<table name="phpbb_forums">

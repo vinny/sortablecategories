@@ -113,9 +113,6 @@ class mock_request implements \phpbb\request\request_interface
 */
 class ajax_test extends \phpbb_database_test_case
 {
-	/** @var \phpbb\db\tools\tools */
-	protected $db_tools;
-
 	/** @var string */
 	protected $table_prefix;
 
@@ -127,6 +124,14 @@ class ajax_test extends \phpbb_database_test_case
 
 	/** @var mock_request */
 	protected $request_mock;
+
+	/**
+	* Define extensions to load
+	*/
+	static protected function setup_extensions()
+	{
+		return array('vinny/sortablecategories');
+	}
 
 	/**
 	* Define XML database fixtures/dataset
@@ -146,24 +151,8 @@ class ajax_test extends \phpbb_database_test_case
 		global $table_prefix;
 		$this->table_prefix = $table_prefix;
 
-		$db = $this->new_dbal();
-		$this->db_tools = new \phpbb\db\tools\tools($db);
-
 		// Use the real DB connection from the test case
-		$this->db_mock = $db;
-
-		// Create database table for testing
-		if (!$this->db_tools->sql_table_exists($this->table_prefix . 'users_category_order'))
-		{
-			$this->db_tools->sql_create_table($this->table_prefix . 'users_category_order', [
-				'COLUMNS' => [
-					'user_id'        => ['UINT', 0],
-					'category_id'    => ['UINT', 0],
-					'display_order'  => ['UINT', 0],
-				],
-				'PRIMARY_KEY' => ['user_id', 'category_id'],
-			]);
-		}
+		$this->db_mock = $this->new_dbal();
 	}
 
 	/**
@@ -171,10 +160,6 @@ class ajax_test extends \phpbb_database_test_case
 	*/
 	public function tearDown(): void
 	{
-		if ($this->db_tools->sql_table_exists($this->table_prefix . 'users_category_order'))
-		{
-			$this->db_tools->sql_table_drop($this->table_prefix . 'users_category_order');
-		}
 		parent::tearDown();
 	}
 
