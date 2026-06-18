@@ -21,11 +21,15 @@
 		<column>forum_name</column>
 		<column>forum_type</column>
 		<column>parent_id</column>
+		<column>forum_parents</column>
+		<column>forum_desc</column>
 		<row>
 			<value>3</value>
 			<value>Test Category</value>
 			<value>0</value>
 			<value>0</value>
+			<value></value>
+			<value></value>
 		</row>
 	</table>
 </dataset>

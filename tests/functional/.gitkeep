@@ -1,0 +1,1 @@
+# Keep this directory so that PHPUnit 9+ doesn't fail when the functional test suite is configured.
