@@ -1,0 +1,4 @@
+vinny_sortablecategories_save:
+    path: /sortablecategories/save
+    defaults: { _controller: vinny.sortablecategories.controller.ajax:save }
+    methods: [POST]

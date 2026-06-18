@@ -1,0 +1,19 @@
+services:
+    vinny.sortablecategories.listener:
+        class: vinny\sortablecategories\event\listener
+        arguments:
+            - '@dbal.conn'
+            - '@user'
+            - '@template'
+            - '@controller.helper'
+            - '%core.table_prefix%'
+        tags:
+            - { name: event.listener }
+
+    vinny.sortablecategories.controller.ajax:
+        class: vinny\sortablecategories\controller\ajax
+        arguments:
+            - '@dbal.conn'
+            - '@user'
+            - '@request'
+            - '%core.table_prefix%'
