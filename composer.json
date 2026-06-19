@@ -1,7 +1,7 @@
 {
     "name": "vinny/sortablecategories",
     "type": "phpbb-extension",
-    "description": "Allows users to reorganize forum categories using drag and drop",
+    "description": "Allows users to reorganize forum categories using drag and drop on the index page",
     "homepage": "https://github.com/vinny/sortablecategories",
     "version": "1.0.0",
     "license": "GPL-2.0-only",

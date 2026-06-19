@@ -13,13 +13,26 @@
 			$(this).closest('.forabg').attr('data-id', id);
 		});
 
+		var handleWheelDuringDrag = function(e) {
+			window.scrollBy(0, e.deltaY);
+		};
+
 		// Initialize SortableJS
 		var sortable = new Sortable($container[0], {
 			animation: 150,
 			handle: '.sortable-handle', // Drag handle selector
 			draggable: '.forabg',       // Draggable item selector
 			ghostClass: 'sortable-ghost',
+			forceFallback: true,        // Disable native HTML5 drag&drop to allow scroll events
+			scroll: true,
+			scrollSensitivity: 80,
+			scrollSpeed: 15,
+			onStart: function() {
+				window.addEventListener('wheel', handleWheelDuringDrag, { passive: true });
+			},
 			onEnd: function() {
+				window.removeEventListener('wheel', handleWheelDuringDrag);
+
 				var order = sortable.toArray();
 
 				if (order.length === 0) {

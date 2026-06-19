@@ -53,8 +53,8 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return [
-			'core.page_header'           => 'page_header',
-			'core.display_forums_before' => 'display_forums_before',
+			'core.index_modify_page_title' => 'page_header',
+			'core.display_forums_before'   => 'display_forums_before',
 		];
 	}
 
