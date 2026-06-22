@@ -1,5 +1,5 @@
-{% if S_SORTABLE_CATEGORIES_ACTIVE and forumrow.S_IS_CAT %}
-<span class="sortable-handle" title="{{ lang('SORTABLE_CATEGORIES_DRAG')|e('html_attr') }}" data-id="{{ forumrow.FORUM_ID }}">
+{% if S_SORTABLE_CATEGORIES_ACTIVE %}
+<span class="sortable-handle" title="{{ lang('SORTABLE_CATEGORIES_DRAG')|e('html_attr') }}" data-id="{{ forumrow.FORUM_ID }}" tabindex="0" role="button" aria-grabbed="false" aria-label="{{ lang('SORTABLE_CATEGORIES_DRAG')|e('html_attr') }}">
 	<i class="icon fa-arrows fa-fw" aria-hidden="true"></i>
 </span>
 {% endif %}

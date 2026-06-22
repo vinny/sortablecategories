@@ -21,7 +21,7 @@ class install_schema extends \phpbb\db\migration\migration
 	{
 		return [
 			'add_tables' => [
-				$this->table_prefix . 'users_category_order' => [
+				$this->table_prefix . 'sortablecategories_user_order' => [
 					'COLUMNS' => [
 						'user_id'        => ['UINT', 0],
 						'category_id'    => ['UINT', 0],
@@ -37,7 +37,7 @@ class install_schema extends \phpbb\db\migration\migration
 	{
 		return [
 			'drop_tables' => [
-				$this->table_prefix . 'users_category_order',
+				$this->table_prefix . 'sortablecategories_user_order',
 			],
 		];
 	}

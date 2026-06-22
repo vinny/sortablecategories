@@ -26,6 +26,9 @@ class listener implements EventSubscriberInterface
 	/** @var \phpbb\controller\helper */
 	protected $controller_helper;
 
+	/** @var \phpbb\request\request_interface */
+	protected $request;
+
 	/** @var string */
 	protected $table_prefix;
 
@@ -37,6 +40,7 @@ class listener implements EventSubscriberInterface
 		\phpbb\user $user,
 		\phpbb\template\template $template,
 		\phpbb\controller\helper $controller_helper,
+		\phpbb\request\request_interface $request,
 		$table_prefix
 	)
 	{
@@ -44,6 +48,7 @@ class listener implements EventSubscriberInterface
 		$this->user = $user;
 		$this->template = $template;
 		$this->controller_helper = $controller_helper;
+		$this->request = $request;
 		$this->table_prefix = $table_prefix;
 	}
 
@@ -53,8 +58,10 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return [
-			'core.index_modify_page_title' => 'page_header',
-			'core.display_forums_before'   => 'display_forums_before',
+			'core.index_modify_page_title'      => 'page_header',
+			'core.display_forums_before'        => 'display_forums_before',
+			'core.ucp_prefs_view_data'          => 'ucp_prefs_view_data',
+			'core.ucp_prefs_view_update_data'   => 'ucp_prefs_view_update_data',
 		];
 	}
 
@@ -63,14 +70,15 @@ class listener implements EventSubscriberInterface
 	 */
 	public function page_header($event)
 	{
-		// Only enable sorting parameters for registered users on the index page
-		if ($this->user->data['is_registered'])
+		// Only enable sorting parameters for registered users on the index page if preference is enabled
+		if ($this->user->data['is_registered'] && (isset($this->user->data['user_sortable_categories']) ? $this->user->data['user_sortable_categories'] : true))
 		{
 			$this->user->add_lang_ext('vinny/sortablecategories', 'common');
 
+			add_form_key('sortablecategories', '_sortable');
+
 			$this->template->assign_vars([
 				'S_SORTABLE_CATEGORIES_ACTIVE' => true,
-				'SORTABLE_CATEGORIES_HASH'   => generate_link_hash('sortablecategories'),
 				'SORTABLE_CATEGORIES_URL'    => $this->controller_helper->route('vinny_sortablecategories_save'),
 			]);
 		}
@@ -81,8 +89,8 @@ class listener implements EventSubscriberInterface
 	 */
 	public function display_forums_before($event)
 	{
-		// Skip sorting for guests, or if there are no forums to sort
-		if (!$this->user->data['is_registered'])
+		// Skip sorting for guests, if preference is disabled, or if there are no forums to sort
+		if (!$this->user->data['is_registered'] || !(isset($this->user->data['user_sortable_categories']) ? $this->user->data['user_sortable_categories'] : true))
 		{
 			return;
 		}
@@ -97,7 +105,7 @@ class listener implements EventSubscriberInterface
 		$root_data = $event['root_data'];
 		$root_id = (int) $root_data['forum_id'];
 
-		$sql = 'SELECT category_id FROM ' . $this->table_prefix . 'users_category_order
+		$sql = 'SELECT category_id FROM ' . $this->table_prefix . 'sortablecategories_user_order
 			WHERE user_id = ' . (int) $user_id . '
 			ORDER BY display_order ASC';
 		$result = $this->db->sql_query($sql);
@@ -188,5 +196,52 @@ class listener implements EventSubscriberInterface
 
 		// Update the event's data set
 		$event['forum_rows'] = $sorted_rows;
+	}
+
+	/**
+	 * Handle display of UCP preferences options
+	 */
+	public function ucp_prefs_view_data($event)
+	{
+		$data = $event['data'];
+		$submit = $event['submit'];
+
+		if ($submit)
+		{
+			$data['user_sortable_categories'] = $this->request->variable('user_sortable_categories', true);
+		}
+		else
+		{
+			$data['user_sortable_categories'] = isset($this->user->data['user_sortable_categories']) ? $this->user->data['user_sortable_categories'] : true;
+		}
+
+		$event['data'] = $data;
+
+		$this->user->add_lang_ext('vinny/sortablecategories', 'common');
+
+		$this->template->assign_vars([
+			'S_SORTABLE_CATEGORIES_ENABLED' => (bool) $data['user_sortable_categories'],
+		]);
+	}
+
+	/**
+	 * Save UCP preferences option on form submit
+	 */
+	public function ucp_prefs_view_update_data($event)
+	{
+		$data = $event['data'];
+		$sql_ary = $event['sql_ary'];
+
+		$sql_ary['user_sortable_categories'] = (int) $data['user_sortable_categories'];
+
+		$event['sql_ary'] = $sql_ary;
+
+		// If user disables category sorting, reset their custom order to default
+		if (!$data['user_sortable_categories'])
+		{
+			$sql = 'DELETE FROM ' . $this->table_prefix . 'sortablecategories_user_order
+				WHERE user_id = ' . (int) $this->user->data['user_id'];
+			$this->db->sql_query($sql);
+		}
 	}
 }

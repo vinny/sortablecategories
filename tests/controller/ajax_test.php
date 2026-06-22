@@ -74,7 +74,7 @@ class mock_request implements \phpbb\request\request_interface
 
 	public function is_set_post($name)
 	{
-		return false;
+		return isset($this->variables[$name]);
 	}
 
 	public function is_set($var, $super_global = \phpbb\request\request_interface::REQUEST)
@@ -202,8 +202,10 @@ class ajax_test extends \phpbb_database_test_case
 	*/
 	public function test_save_order_success()
 	{
-		global $user;
+		global $user, $config, $request;
 		$old_user = $user;
+		$old_config = isset($config) ? $config : null;
+		$old_request = isset($request) ? $request : null;
 
 		// Set up controller first so $this->user_mock is instantiated
 		$this->setup_controller(true, false, 'POST', '', array(3, 4, 1));
@@ -212,21 +214,34 @@ class ajax_test extends \phpbb_database_test_case
 		$session_id = 'test_session_id';
 		$this->user_mock->session_id = $session_id;
 		$user = $this->user_mock;
+		$request = $this->request_mock;
 
-		$valid_hash = generate_link_hash('sortablecategories');
-		$this->request_mock->variables['hash'] = $valid_hash;
+		// Mock global config for check_form_key
+		$config = new \ArrayObject([
+			'form_token_lifetime' => 86400,
+			'form_token_sid_guests' => 0,
+		]);
+
+		// Generate form key parameters
+		$creation_time = time() - 10;
+		$form_token = sha1($creation_time . 'some_salt' . 'sortablecategories');
+
+		$this->request_mock->variables['creation_time'] = $creation_time;
+		$this->request_mock->variables['form_token'] = $form_token;
 
 		$response = $this->ajax_controller->save();
 
-		// Restore global user
+		// Restore global variables
 		$user = $old_user;
+		$config = $old_config;
+		$request = $old_request;
 
 		$this->assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('{"status":"success"}', $response->getContent());
 
 		// Verify database entries
-		$sql = 'SELECT * FROM ' . $this->table_prefix . 'users_category_order
+		$sql = 'SELECT * FROM ' . $this->table_prefix . 'sortablecategories_user_order
 			WHERE user_id = 2
 			ORDER BY display_order ASC';
 		$result = $this->db_mock->sql_query($sql);

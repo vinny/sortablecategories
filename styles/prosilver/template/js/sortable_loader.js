@@ -17,6 +17,59 @@
 			window.scrollBy(0, e.deltaY);
 		};
 
+		var saveOrder = function($activeHandle) {
+			var order = sortable.toArray();
+
+			if (order.length === 0) {
+				return;
+			}
+
+			// Show loading feedback on the handle icon
+			var $icon = $activeHandle.find('i');
+			$icon.removeClass('fa-arrows').addClass('fa-spinner fa-spin');
+
+			var postData = {
+				order: order
+			};
+
+			var $csrf = $('#sortable-csrf');
+			if ($csrf.length) {
+				var creationTime = $csrf.find('input[name="creation_time"]').val();
+				var formToken = $csrf.find('input[name="form_token"]').val();
+				if (creationTime && formToken) {
+					postData.creation_time = creationTime;
+					postData.form_token = formToken;
+				}
+			}
+
+			// Submit payload via AJAX POST
+			$.ajax({
+				url: SORTABLE_CATEGORIES_URL,
+				type: 'POST',
+				data: postData,
+				dataType: 'json'
+			}).done(function(response) {
+				if (response.status === 'success') {
+					// Visual success feedback: change icon to green checkmark
+					$icon.removeClass('fa-spinner fa-spin').addClass('fa-check').css('color', '#2ecc71');
+					setTimeout(function() {
+						$icon.removeClass('fa-check').addClass('fa-arrows').css('color', '');
+					}, 1000);
+				} else {
+					showError($icon);
+				}
+			}).fail(function(xhr) {
+				showError($icon);
+			});
+		};
+
+		var showError = function($icon) {
+			$icon.removeClass('fa-spinner fa-spin').addClass('fa-times').css('color', '#e74c3c');
+			setTimeout(function() {
+				$icon.removeClass('fa-times').addClass('fa-arrows').css('color', '');
+			}, 2000);
+		};
+
 		// Initialize SortableJS
 		var sortable = new Sortable($container[0], {
 			animation: 150,
@@ -30,31 +83,65 @@
 			onStart: function() {
 				window.addEventListener('wheel', handleWheelDuringDrag, { passive: true });
 			},
-			onEnd: function() {
+			onEnd: function(evt) {
 				window.removeEventListener('wheel', handleWheelDuringDrag);
+				var $activeHandle = $(evt.item).find('.sortable-handle');
+				saveOrder($activeHandle);
+			}
+		});
 
-				var order = sortable.toArray();
+		// Keyboard accessibility
+		$container.find('.sortable-handle').on('keydown', function(e) {
+			var $handle = $(this);
+			var $item = $handle.closest('.forabg');
+			var isGrabbed = $handle.hasClass('is-grabbed');
 
-				if (order.length === 0) {
-					return;
+			if (e.key === ' ' || e.key === 'Enter') {
+				e.preventDefault();
+				if (!isGrabbed) {
+					// Grab
+					$handle.addClass('is-grabbed').attr('aria-grabbed', 'true');
+					$item.css('opacity', '0.6');
+					// Store original index in case of Cancel
+					$item.data('original-index', $item.index());
+				} else {
+					// Drop
+					$handle.removeClass('is-grabbed').attr('aria-grabbed', 'false');
+					$item.css('opacity', '');
+					saveOrder($handle);
 				}
-
-				// Submit payload via AJAX POST
-				$.ajax({
-					url: SORTABLE_CATEGORIES_URL,
-					type: 'POST',
-					data: {
-						hash: SORTABLE_CATEGORIES_HASH,
-						order: order
-					},
-					dataType: 'json'
-				}).done(function(response) {
-					if (response.status !== 'success') {
-						console.error('Failed to save category order:', response.message || 'Unknown error');
+			} else if (isGrabbed) {
+				if (e.key === 'ArrowUp') {
+					e.preventDefault();
+					var $prev = $item.prev('.forabg');
+					if ($prev.length) {
+						$item.insertBefore($prev);
+						$handle.focus(); // Keep focus
 					}
-				}).fail(function(xhr) {
-					console.error('AJAX request failed:', xhr.responseText);
-				});
+				} else if (e.key === 'ArrowDown') {
+					e.preventDefault();
+					var $next = $item.next('.forabg');
+					if ($next.length) {
+						$item.insertAfter($next);
+						$handle.focus(); // Keep focus
+					}
+				} else if (e.key === 'Escape') {
+					e.preventDefault();
+					// Cancel and restore
+					$handle.removeClass('is-grabbed').attr('aria-grabbed', 'false');
+					$item.css('opacity', '');
+					var origIndex = $item.data('original-index');
+					if (typeof origIndex !== 'undefined') {
+						$item.detach();
+						var $siblings = $container.children('.forabg');
+						if (origIndex === 0) {
+							$container.prepend($item);
+						} else {
+							$item.insertAfter($siblings.eq(origIndex - 1));
+						}
+						$handle.focus(); // Keep focus after restoring
+					}
+				}
 			}
 		});
 	});

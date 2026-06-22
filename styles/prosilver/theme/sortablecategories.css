@@ -1,8 +1,8 @@
 .sortable-handle {
 	float: left;
 	cursor: grab;
-	margin-right: 8px;
-	margin-top: 2px;
+	margin-right: 2px;
+	margin-top: 4px;
 	color: #FFFFFF;
 	opacity: 0.7;
 	transition: opacity 0.2s ease-in-out;
@@ -20,4 +20,16 @@
 .sortable-ghost {
 	opacity: 0.4;
 	box-shadow: none !important;
+}
+
+.sortable-handle:focus {
+	outline: 2px solid #12A3EB;
+	outline-offset: 2px;
+	border-radius: 2px;
+	opacity: 1;
+}
+
+.sortable-handle.is-grabbed {
+	color: #12A3EB !important;
+	opacity: 1 !important;
 }

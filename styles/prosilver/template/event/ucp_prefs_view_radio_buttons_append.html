@@ -1,0 +1,8 @@
+<hr />
+<dl>
+	<dt><label for="user_sortable_categories">{{ lang('SORTABLE_CATEGORIES_UCP_ENABLE') }}{{ lang('COLON') }}</label></dt>
+	<dd>
+		<label for="user_sortable_categories_yes"><input type="radio" name="user_sortable_categories" id="user_sortable_categories_yes" value="1"{% if S_SORTABLE_CATEGORIES_ENABLED %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
+		<label for="user_sortable_categories_no"><input type="radio" name="user_sortable_categories" id="user_sortable_categories_no" value="0"{% if not S_SORTABLE_CATEGORIES_ENABLED %} checked="checked"{% endif %} /> {{ lang('SORTABLE_CATEGORIES_UCP_NO') }}</label>
+	</dd>
+</dl>

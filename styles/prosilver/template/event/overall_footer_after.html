@@ -1,6 +1,6 @@
 {% if S_SORTABLE_CATEGORIES_ACTIVE %}
+<div id="sortable-csrf" style="display: none;">{{ S_FORM_TOKEN_sortable }}</div>
 <script>
-	var SORTABLE_CATEGORIES_HASH = '{{ SORTABLE_CATEGORIES_HASH|e("js") }}';
 	var SORTABLE_CATEGORIES_URL = '{{ SORTABLE_CATEGORIES_URL|e("js") }}';
 </script>
 {% INCLUDEJS '@vinny_sortablecategories/js/sortable.min.js' %}

@@ -52,8 +52,7 @@ class ajax
 			], 403);
 		}
 
-		$token = $this->request->variable('hash', '');
-		if (!check_link_hash($token, 'sortablecategories'))
+		if (!check_form_key('sortablecategories'))
 		{
 			return new JsonResponse([
 				'status'  => 'error',
@@ -71,31 +70,51 @@ class ajax
 			], 400);
 		}
 
+		// Fetch all valid root-level category/forum IDs
+		$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . ' WHERE parent_id = 0';
+		$result = $this->db->sql_query($sql);
+		$valid_ids = [];
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$valid_ids[] = (int) $row['forum_id'];
+		}
+		$this->db->sql_freeresult($result);
+
+		// Sanitize, de-duplicate, and validate the input order
+		$order = array_map('intval', $order);
+		$order = array_unique($order);
+		$order = array_intersect($order, $valid_ids);
+
+		if (empty($order))
+		{
+			return new JsonResponse([
+				'status'  => 'error',
+				'message' => $this->user->lang('SORTABLE_CATEGORIES_NO_ORDER')
+			], 400);
+		}
+
 		$user_id = (int) $this->user->data['user_id'];
 
 		// Delete existing ordering database entries for this user
-		$sql = 'DELETE FROM ' . $this->table_prefix . 'users_category_order
+		$sql = 'DELETE FROM ' . $this->table_prefix . 'sortablecategories_user_order
 			WHERE user_id = ' . (int) $user_id;
 		$this->db->sql_query($sql);
 
 		// Insert updated display orders
 		$insert_data = [];
-		foreach ($order as $index => $category_id)
+		$index = 0;
+		foreach ($order as $category_id)
 		{
-			$category_id = (int) $category_id;
-			if ($category_id > 0)
-			{
-				$insert_data[] = [
-					'user_id'       => $user_id,
-					'category_id'   => $category_id,
-					'display_order' => (int) $index,
-				];
-			}
+			$insert_data[] = [
+				'user_id'       => $user_id,
+				'category_id'   => $category_id,
+				'display_order' => $index++,
+			];
 		}
 
 		if (!empty($insert_data))
 		{
-			$this->db->sql_multi_insert($this->table_prefix . 'users_category_order', $insert_data);
+			$this->db->sql_multi_insert($this->table_prefix . 'sortablecategories_user_order', $insert_data);
 		}
 
 		return new JsonResponse([
