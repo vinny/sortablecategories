@@ -19,10 +19,10 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
-	'SORTABLE_CATEGORIES_DRAG'           => 'Drag to reorder',
-	'SORTABLE_CATEGORIES_LOGIN_REQUIRED' => 'Login required',
-	'SORTABLE_CATEGORIES_INVALID_TOKEN'  => 'Invalid security token',
-	'SORTABLE_CATEGORIES_NO_ORDER'       => 'No order data provided',
-	'SORTABLE_CATEGORIES_UCP_ENABLE'     => 'Display category sorting',
-	'SORTABLE_CATEGORIES_UCP_NO'         => 'No, restore the default category order',
+	'SORTABLE_CATEGORIES_DRAG'          	=> 'Drag to reorder',
+	'SORTABLE_CATEGORIES_LOGIN_REQUIRED'	=> 'Login required',
+	'SORTABLE_CATEGORIES_INVALID_TOKEN'		=> 'Invalid security token',
+	'SORTABLE_CATEGORIES_NO_ORDER'			=> 'No order data provided',
+	'SORTABLE_CATEGORIES_UCP_ENABLE'		=> 'Display category sorting',
+	'SORTABLE_CATEGORIES_UCP_NO'			=> 'No, restore the default category order',
 ));

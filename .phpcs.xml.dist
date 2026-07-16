@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<ruleset name="phpBB Sortable Categories">
+	<description>Coding standards for Sortable Categories extension.</description>
+
+	<!-- Use tabs for indentation -->
+	<arg name="tab-width" value="4"/>
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="p"/>
+
+	<!-- Paths to check -->
+	<file>controller</file>
+	<file>event</file>
+	<file>migrations</file>
+
+	<!-- Exclude third party files -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+
+	<!-- Standard ruleset: phpBB uses a custom layout based on PSR2/PSR12 but with tabs -->
+	<rule ref="PSR12">
+		<exclude name="Generic.Files.LineLength"/>
+		<!-- We use tabs, so exclude PSR12 space indent rules -->
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
+		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/>
+		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+		<!-- Exclude class and method name formatting sniffs (phpBB uses snake_case) -->
+		<exclude name="Squiz.Classes.ValidClassName"/>
+		<exclude name="PSR1.Classes.ClassDeclaration"/>
+		<exclude name="PSR1.Methods.CamelCapsMethodName"/>
+		<!-- Exclude control structure and brace placement sniffs (phpBB uses braces on new lines) -->
+		<exclude name="Squiz.ControlStructures.ControlSignature"/>
+		<exclude name="PSR2.ControlStructures.ControlStructureSpacing"/>
+		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration"/>
+		<!-- phpBB allows static public function -->
+		<exclude name="PSR2.Methods.MethodDeclaration.StaticBeforeVisibility"/>
+	</rule>
+
+	<!-- Ensure tab indentation is used -->
+	<rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
+	<rule ref="Generic.WhiteSpace.ScopeIndent">
+		<properties>
+			<property name="indent" value="4"/>
+			<property name="tabIndent" value="true"/>
+		</properties>
+	</rule>
+</ruleset>

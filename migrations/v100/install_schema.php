@@ -1,4 +1,5 @@
 <?php
+
 /**
 *
 * Sortable Categories extension for the phpBB Forum Software package.
@@ -23,9 +24,9 @@ class install_schema extends \phpbb\db\migration\migration
 			'add_tables' => [
 				$this->table_prefix . 'sortablecategories_user_order' => [
 					'COLUMNS' => [
-						'user_id'        => ['UINT', 0],
-						'category_id'    => ['UINT', 0],
-						'display_order'  => ['UINT', 0],
+						'user_id'			=> ['UINT', 0],
+						'category_id'		=> ['UINT', 0],
+						'display_order'		=> ['UINT', 0],
 					],
 					'PRIMARY_KEY' => ['user_id', 'category_id'],
 				],

@@ -1,4 +1,5 @@
 <?php
+
 /**
 *
 * Sortable Categories extension for the phpBB Forum Software package.
@@ -58,10 +59,10 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return [
-			'core.index_modify_page_title'      => 'page_header',
-			'core.display_forums_before'        => 'display_forums_before',
-			'core.ucp_prefs_view_data'          => 'ucp_prefs_view_data',
-			'core.ucp_prefs_view_update_data'   => 'ucp_prefs_view_update_data',
+			'core.index_modify_page_title'		=> 'page_header',
+			'core.display_forums_before'		=> 'display_forums_before',
+			'core.ucp_prefs_view_data'			=> 'ucp_prefs_view_data',
+			'core.ucp_prefs_view_update_data'	=> 'ucp_prefs_view_update_data',
 		];
 	}
 
@@ -78,8 +79,8 @@ class listener implements EventSubscriberInterface
 			add_form_key('sortablecategories', '_sortable');
 
 			$this->template->assign_vars([
-				'S_SORTABLE_CATEGORIES_ACTIVE' => true,
-				'SORTABLE_CATEGORIES_URL'    => $this->controller_helper->route('vinny_sortablecategories_save'),
+				'S_SORTABLE_CATEGORIES_ACTIVE'	=> true,
+				'SORTABLE_CATEGORIES_URL'		=> $this->controller_helper->route('vinny_sortablecategories_save'),
 			]);
 		}
 	}
@@ -136,8 +137,8 @@ class listener implements EventSubscriberInterface
 				// Top-level item (Category or Catless Forum)
 				$current_cat_id = $forum_id;
 				$grouped[$current_cat_id] = [
-					'item'     => $row,
-					'children' => []
+					'item'		=> $row,
+					'children'	=> []
 				];
 			}
 			else
@@ -220,7 +221,7 @@ class listener implements EventSubscriberInterface
 		$this->user->add_lang_ext('vinny/sortablecategories', 'common');
 
 		$this->template->assign_vars([
-			'S_SORTABLE_CATEGORIES_ENABLED' => (bool) $data['user_sortable_categories'],
+			'S_SORTABLE_CATEGORIES_ENABLED'	=> (bool) $data['user_sortable_categories'],
 		]);
 	}
 

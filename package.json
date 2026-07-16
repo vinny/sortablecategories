@@ -1,0 +1,15 @@
+{
+  "name": "phpbb-sortablecategories-dev",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Development dependencies for sorting categories phpBB extension",
+  "scripts": {
+    "eslint": "eslint \"styles/**/*.js\" --ignore-pattern \"**/sortable.min.js\"",
+    "stylelint": "stylelint \"styles/**/*.css\""
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard": "^34.0.0"
+  }
+}

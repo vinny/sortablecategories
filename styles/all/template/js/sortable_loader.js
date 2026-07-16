@@ -58,7 +58,7 @@
 				} else {
 					showError($icon);
 				}
-			}).fail(function(xhr) {
+			}).fail(function() {
 				showError($icon);
 			});
 		};

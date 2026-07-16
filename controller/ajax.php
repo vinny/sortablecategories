@@ -1,4 +1,5 @@
 <?php
+
 /**
 *
 * Sortable Categories extension for the phpBB Forum Software package.
@@ -47,16 +48,16 @@ class ajax
 		if (!$this->user->data['is_registered'])
 		{
 			return new JsonResponse([
-				'status'  => 'error',
-				'message' => $this->user->lang('SORTABLE_CATEGORIES_LOGIN_REQUIRED')
+				'status'	=> 'error',
+				'message'	=> $this->user->lang('SORTABLE_CATEGORIES_LOGIN_REQUIRED')
 			], 403);
 		}
 
 		if (!check_form_key('sortablecategories'))
 		{
 			return new JsonResponse([
-				'status'  => 'error',
-				'message' => $this->user->lang('SORTABLE_CATEGORIES_INVALID_TOKEN')
+				'status'	=> 'error',
+				'message'	=> $this->user->lang('SORTABLE_CATEGORIES_INVALID_TOKEN')
 			], 400);
 		}
 
@@ -65,8 +66,8 @@ class ajax
 		if (empty($order))
 		{
 			return new JsonResponse([
-				'status'  => 'error',
-				'message' => $this->user->lang('SORTABLE_CATEGORIES_NO_ORDER')
+				'status'	=> 'error',
+				'message'	=> $this->user->lang('SORTABLE_CATEGORIES_NO_ORDER')
 			], 400);
 		}
 
@@ -88,8 +89,8 @@ class ajax
 		if (empty($order))
 		{
 			return new JsonResponse([
-				'status'  => 'error',
-				'message' => $this->user->lang('SORTABLE_CATEGORIES_NO_ORDER')
+				'status'	=> 'error',
+				'message'	=> $this->user->lang('SORTABLE_CATEGORIES_NO_ORDER')
 			], 400);
 		}
 
@@ -106,16 +107,13 @@ class ajax
 		foreach ($order as $category_id)
 		{
 			$insert_data[] = [
-				'user_id'       => $user_id,
-				'category_id'   => $category_id,
-				'display_order' => $index++,
+				'user_id'		=> $user_id,
+				'category_id'	=> $category_id,
+				'display_order'	=> $index++,
 			];
 		}
 
-		if (!empty($insert_data))
-		{
-			$this->db->sql_multi_insert($this->table_prefix . 'sortablecategories_user_order', $insert_data);
-		}
+		$this->db->sql_multi_insert($this->table_prefix . 'sortablecategories_user_order', $insert_data);
 
 		return new JsonResponse([
 			'status' => 'success'
