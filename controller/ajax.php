@@ -1,5 +1,4 @@
 <?php
-
 /**
 *
 * Sortable Categories extension for the phpBB Forum Software package.
