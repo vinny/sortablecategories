@@ -12,9 +12,14 @@ namespace vinny\sortablecategories\migrations\v100;
 
 class install_schema extends \phpbb\db\migration\migration
 {
+	public function effectively_installed()
+	{
+		return $this->db_tools->sql_table_exists($this->table_prefix . 'sortablecategories_user_order');
+	}
+
 	static public function depends_on()
 	{
-		return [];
+		return ['\phpbb\db\migration\data\v330\v330'];
 	}
 
 	public function update_schema()
