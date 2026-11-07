@@ -33,6 +33,8 @@
 		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration"/>
 		<!-- phpBB allows static public function -->
 		<exclude name="PSR2.Methods.MethodDeclaration.StaticBeforeVisibility"/>
+		<!-- Exclude header block spacing (phpBB does not place a blank line directly after <?php) -->
+		<exclude name="PSR12.Files.FileHeader"/>
 	</rule>
 
 	<!-- Ensure tab indentation is used -->
